@@ -137,6 +137,20 @@ export default function Analytics() {
     ],
   };
 
+  const chartOptions = {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#000000',
+          font: {
+            size: 14
+          }
+        }
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-4">
@@ -154,35 +168,35 @@ export default function Analytics() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 p-2 sm:p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 sm:mb-6">
           <Link 
             href="/"
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-black bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             ← Back to Home
           </Link>
-          <h1 className="text-2xl font-bold text-gray-800">Financial Analytics</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-black text-center sm:text-left">Financial Analytics</h1>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Income Analysis */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Income Sources</h2>
-            <div className="h-64">
-              <Doughnut data={incomeChartData} options={{ maintainAspectRatio: false }} />
+          <div className="bg-white rounded-xl shadow-sm p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-black mb-3 sm:mb-4">Income Sources</h2>
+            <div className="h-48 sm:h-64">
+              <Doughnut data={incomeChartData} options={chartOptions} />
             </div>
-            <div className="mt-4 space-y-2">
+            <div className="mt-3 sm:mt-4 space-y-2">
               {incomeAnalysis.map((item) => (
                 <div key={item.category} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                   <div className="flex items-center">
-                    <span className="text-xl mr-2">{getCategoryIcon(item.category, 'income')}</span>
-                    <span className="font-medium">{getCategoryName(item.category, 'income')}</span>
+                    <span className="text-lg sm:text-xl mr-2">{getCategoryIcon(item.category, 'income')}</span>
+                    <span className="font-medium text-black text-sm sm:text-base">{getCategoryName(item.category, 'income')}</span>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-green-600">£{item.total.toFixed(2)}</p>
-                    <p className="text-sm text-gray-500">{item.count} transactions</p>
+                    <p className="font-semibold text-green-600 text-sm sm:text-base">£{item.total.toFixed(2)}</p>
+                    <p className="text-xs sm:text-sm text-black">{item.count} transactions</p>
                   </div>
                 </div>
               ))}
@@ -190,21 +204,21 @@ export default function Analytics() {
           </div>
 
           {/* Expense Analysis */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Expense Categories</h2>
-            <div className="h-64">
-              <Doughnut data={expenseChartData} options={{ maintainAspectRatio: false }} />
+          <div className="bg-white rounded-xl shadow-sm p-3 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-black mb-3 sm:mb-4">Expense Categories</h2>
+            <div className="h-48 sm:h-64">
+              <Doughnut data={expenseChartData} options={chartOptions} />
             </div>
-            <div className="mt-4 space-y-2">
+            <div className="mt-3 sm:mt-4 space-y-2">
               {expenseAnalysis.map((item) => (
                 <div key={item.category} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                   <div className="flex items-center">
-                    <span className="text-xl mr-2">{getCategoryIcon(item.category, 'expense')}</span>
-                    <span className="font-medium">{getCategoryName(item.category, 'expense')}</span>
+                    <span className="text-lg sm:text-xl mr-2">{getCategoryIcon(item.category, 'expense')}</span>
+                    <span className="font-medium text-black text-sm sm:text-base">{getCategoryName(item.category, 'expense')}</span>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-red-600">£{item.total.toFixed(2)}</p>
-                    <p className="text-sm text-gray-500">{item.count} transactions</p>
+                    <p className="font-semibold text-red-600 text-sm sm:text-base">£{item.total.toFixed(2)}</p>
+                    <p className="text-xs sm:text-sm text-black">{item.count} transactions</p>
                   </div>
                 </div>
               ))}

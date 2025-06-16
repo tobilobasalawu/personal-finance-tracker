@@ -65,28 +65,28 @@ const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger, sel
   }
 
   return (
-    <div className="mt-6">
-      <h2 className="text-lg text-black font-semibold mb-4">Transactions</h2>
-      <div className="space-y-3">
+    <div className="mt-4 sm:mt-6">
+      <h2 className="text-base sm:text-lg text-black font-semibold mb-3 sm:mb-4">Transactions</h2>
+      <div className="space-y-2 sm:space-y-3">
         {transactions.map((transaction) => {
           const categoryInfo = getCategoryInfo(transaction.type, transaction.category);
           return (
-            <div key={transaction.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg shadow-sm">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+            <div key={transaction.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-0">
+                <div className={`p-1.5 sm:p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                   {categoryInfo?.icon || (transaction.type === 'income' ? '💰' : '💸')}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800">{transaction.name}</p>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                    <span className="text-sm text-gray-400">•</span>
-                    <p className="text-sm text-gray-500">{categoryInfo?.name || 'Uncategorized'}</p>
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">{transaction.name}</p>
+                  <div className="flex flex-wrap items-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+                    <p className="text-gray-500">{new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                    <span className="text-gray-400">•</span>
+                    <p className="text-gray-500">{categoryInfo?.name || 'Uncategorized'}</p>
                   </div>
                 </div>
               </div>
-              <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-700' : 'text-red-700'}`}>
-                {transaction.type === 'income' ? '+' : '-'}£{transaction.amount}
+              <p className={`font-semibold text-base sm:text-lg ${transaction.type === 'income' ? 'text-green-700' : 'text-red-700'}`}>
+                {transaction.type === 'income' ? '+' : '-'}£{transaction.amount.toFixed(2)}
               </p>
             </div>
           );
