@@ -22,13 +22,28 @@ ChartJS.register(
   Legend
 );
 
+interface ChartDataset {
+  label: string;
+  data: number[];
+  fill: boolean;
+  backgroundColor: string;
+  borderColor: string;
+  tension: number;
+  pointRadius: number;
+}
+
+interface ChartDataType {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
 interface ChartProps {
   refreshTrigger: boolean;
   selectedMonth: string | null;
 }
 
 const Chart: React.FC<ChartProps> = ({ refreshTrigger, selectedMonth }) => {
-  const [chartData, setChartData] = useState<any>({
+  const [chartData, setChartData] = useState<ChartDataType>({
     labels: [],
     datasets: [],
   });

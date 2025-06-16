@@ -47,7 +47,7 @@ const MonthlyNavigation: React.FC<MonthlyNavigationProps> = ({ refreshTrigger, s
     };
 
     fetchMonths();
-  }, [refreshTrigger]); // Fetch months when refreshTrigger changes
+  }, [refreshTrigger, onSelectMonth, selectedMonth]); // Fetch months when refreshTrigger, onSelectMonth, or selectedMonth changes
 
   if (loading) {
     return <div className="text-center text-gray-500">Loading months...</div>;

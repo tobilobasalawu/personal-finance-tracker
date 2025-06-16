@@ -18,37 +18,36 @@ const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger, sel
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchTransactions = async () => {
-    setLoading(true);
-    let query = supabase
-      .from('transactions')
-      .select('id, name, amount, type, date')
-      .order('created_at', { ascending: false });
-
-    if (selectedMonth) {
-      const [monthName, year] = selectedMonth.split(' ');
-      const monthNumber = (new Date(Date.parse(monthName + " 1, 2000")).getMonth() + 1).toString().padStart(2, '0');
-      const startDate = `${year}-${monthNumber}-01`;
-      const endDate = `${year}-${monthNumber}-${new Date(parseInt(year), parseInt(monthNumber), 0).getDate()}`;
-
-      query = query.gte('date', startDate).lte('date', endDate);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Error fetching transactions:', error);
-      setTransactions([]);
-    } else {
-      // Type assertion to ensure the data matches the Transaction interface
-      setTransactions(data as Transaction[]);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const fetchTransactions = async () => {
+      setLoading(true);
+      let query = supabase
+        .from('transactions')
+        .select('id, name, amount, type, date')
+        .order('created_at', { ascending: false });
+
+      if (selectedMonth) {
+        const [monthName, year] = selectedMonth.split(' ');
+        const monthNumber = (new Date(Date.parse(monthName + " 1, 2000")).getMonth() + 1).toString().padStart(2, '0');
+        const startDate = `${year}-${monthNumber}-01`;
+        const endDate = `${year}-${monthNumber}-${new Date(parseInt(year), parseInt(monthNumber), 0).getDate()}`;
+
+        query = query.gte('date', startDate).lte('date', endDate);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error fetching transactions:', error);
+        setTransactions([]);
+      } else {
+        setTransactions(data as Transaction[]);
+      }
+      setLoading(false);
+    };
+
     fetchTransactions();
-  }, [refreshTrigger, selectedMonth]); // Re-fetch when refreshTrigger or selectedMonth changes
+  }, [refreshTrigger, selectedMonth, setTransactions]);
 
   if (loading) {
     return <div className="text-center text-gray-500">Loading transactions...</div>;

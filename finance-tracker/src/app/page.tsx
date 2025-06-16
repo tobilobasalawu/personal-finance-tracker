@@ -1,5 +1,4 @@
 'use client'
-import Image from "next/image";
 import Header from '../components/Header';
 import BalanceDisplay from '../components/BalanceDisplay';
 import ActionButtons from '../components/ActionButtons';
@@ -48,7 +47,7 @@ export default function Home() {
         {/* Chart (Placeholder) */}
         <Chart refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
         {/* Transactions List (Placeholder) */}
-        <TransactionsList refreshTrigger={refreshTransactions} />
+        <TransactionsList refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
       </div>
       {/* Add Income Modal */}
       <AddIncomeModal
