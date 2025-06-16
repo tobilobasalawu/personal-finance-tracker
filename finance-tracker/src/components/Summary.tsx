@@ -54,7 +54,7 @@ const Summary: React.FC<SummaryProps> = ({ refreshTrigger }) => {
         </div>
         <div>
           <p className="text-sm text-gray-500">Income</p>
-          <p className="text-lg font-semibold text-green-700">₹{income.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-green-700">£{income.toFixed(2)}</p>
         </div>
       </div>
       <div className="flex items-center space-x-2 bg-red-50 p-3 rounded-lg flex-1 ml-2">
@@ -65,7 +65,7 @@ const Summary: React.FC<SummaryProps> = ({ refreshTrigger }) => {
         </div>
         <div>
           <p className="text-sm text-gray-500">Expenses</p>
-          <p className="text-lg font-semibold text-red-700">₹{expenses.toFixed(2)}</p>
+          <p className="text-lg font-semibold text-red-700">£{expenses.toFixed(2)}</p>
         </div>
       </div>
     </div>

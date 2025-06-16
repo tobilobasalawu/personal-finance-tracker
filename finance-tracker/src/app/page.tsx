@@ -15,9 +15,14 @@ export default function Home() {
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
   const [refreshTransactions, setRefreshTransactions] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   const handleTransactionAdded = () => {
     setRefreshTransactions(prev => !prev);
+  };
+
+  const handleMonthSelect = (month: string) => {
+    setSelectedMonth(month);
   };
 
   return (
@@ -33,11 +38,15 @@ export default function Home() {
           onAddExpenseClick={() => setIsAddExpenseModalOpen(true)}
         />
         {/* Monthly Navigation (Placeholder) */}
-        <MonthlyNavigation />
+        <MonthlyNavigation
+          refreshTrigger={refreshTransactions}
+          selectedMonth={selectedMonth}
+          onSelectMonth={handleMonthSelect}
+        />
         {/* Summary (Placeholder) */}
         <Summary refreshTrigger={refreshTransactions} />
         {/* Chart (Placeholder) */}
-        <Chart />
+        <Chart refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
         {/* Transactions List (Placeholder) */}
         <TransactionsList refreshTrigger={refreshTransactions} />
       </div>
