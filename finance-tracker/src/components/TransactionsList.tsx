@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 interface Transaction {
   id: string;
@@ -8,37 +9,42 @@ interface Transaction {
   date: string;
 }
 
-const TransactionsList = () => {
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      name: 'Freelance Payment',
-      amount: 1200,
-      type: 'income',
-      date: '25 Jan, 2022',
-    },
-    {
-      id: '2',
-      name: 'Groceries',
-      amount: 150,
-      type: 'expense',
-      date: '24 Jan, 2022',
-    },
-    {
-      id: '3',
-      name: 'Salary',
-      amount: 2500,
-      type: 'income',
-      date: '20 Jan, 2022',
-    },
-    {
-      id: '4',
-      name: 'Electricity Bill',
-      amount: 80,
-      type: 'expense',
-      date: '18 Jan, 2022',
-    },
-  ];
+interface TransactionsListProps {
+  refreshTrigger: boolean;
+}
+
+const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger }) => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTransactions = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('transactions')
+      .select('id, name, amount, type, date')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching transactions:', error);
+      setTransactions([]);
+    } else {
+      // Type assertion to ensure the data matches the Transaction interface
+      setTransactions(data as Transaction[]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [refreshTrigger]); // Re-fetch when refreshTrigger changes
+
+  if (loading) {
+    return <div className="text-center text-gray-500">Loading transactions...</div>;
+  }
+
+  if (transactions.length === 0) {
+    return <div className="text-center text-gray-500">No transactions yet. Add some income or expenses!</div>;
+  }
 
   return (
     <div className="mt-6">
@@ -60,7 +66,7 @@ const TransactionsList = () => {
               </div>
               <div>
                 <p className="font-medium text-gray-800">{transaction.name}</p>
-                <p className="text-sm text-gray-500">{transaction.date}</p>
+                <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
               </div>
             </div>
             <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-700' : 'text-red-700'}`}>

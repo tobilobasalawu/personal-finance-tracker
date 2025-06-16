@@ -1,11 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 interface SummaryProps {
-  income: number;
-  expenses: number;
+  refreshTrigger: boolean;
 }
 
-const Summary: React.FC<SummaryProps> = ({ income, expenses }) => {
+const Summary: React.FC<SummaryProps> = ({ refreshTrigger }) => {
+  const [income, setIncome] = useState(0);
+  const [expenses, setExpenses] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummaryData = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from('transactions').select('amount, type');
+
+      if (error) {
+        console.error('Error fetching summary data:', error);
+        setIncome(0);
+        setExpenses(0);
+      } else {
+        let totalIncome = 0;
+        let totalExpenses = 0;
+
+        data.forEach((transaction) => {
+          if (transaction.type === 'income') {
+            totalIncome += parseFloat(transaction.amount);
+          } else if (transaction.type === 'expense') {
+            totalExpenses += parseFloat(transaction.amount);
+          }
+        });
+
+        setIncome(totalIncome);
+        setExpenses(totalExpenses);
+      }
+      setLoading(false);
+    };
+
+    fetchSummaryData();
+  }, [refreshTrigger]);
+
+  if (loading) {
+    return <div className="text-center text-gray-500">Loading summary...</div>;
+  }
+
   return (
     <div className="flex justify-between items-center mb-6">
       <div className="flex items-center space-x-2 bg-green-50 p-3 rounded-lg flex-1 mr-2">
@@ -16,7 +54,7 @@ const Summary: React.FC<SummaryProps> = ({ income, expenses }) => {
         </div>
         <div>
           <p className="text-sm text-gray-500">Income</p>
-          <p className="text-lg font-semibold text-green-700">₹{income}</p>
+          <p className="text-lg font-semibold text-green-700">₹{income.toFixed(2)}</p>
         </div>
       </div>
       <div className="flex items-center space-x-2 bg-red-50 p-3 rounded-lg flex-1 ml-2">
@@ -27,7 +65,7 @@ const Summary: React.FC<SummaryProps> = ({ income, expenses }) => {
         </div>
         <div>
           <p className="text-sm text-gray-500">Expenses</p>
-          <p className="text-lg font-semibold text-red-700">₹{expenses}</p>
+          <p className="text-lg font-semibold text-red-700">₹{expenses.toFixed(2)}</p>
         </div>
       </div>
     </div>

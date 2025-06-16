@@ -14,6 +14,11 @@ import React, { useState } from 'react';
 export default function Home() {
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
+  const [refreshTransactions, setRefreshTransactions] = useState(false);
+
+  const handleTransactionAdded = () => {
+    setRefreshTransactions(prev => !prev);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -21,22 +26,33 @@ export default function Home() {
         {/* Header */}
         <Header />
         {/* Balance Display */}
-        <BalanceDisplay balance={2410} />
+        <BalanceDisplay refreshTrigger={refreshTransactions} />
         {/* Action Buttons */}
-        <ActionButtons onAddIncomeClick={() => setIsAddIncomeModalOpen(true)} onAddExpenseClick={() => setIsAddExpenseModalOpen(true)} />
+        <ActionButtons
+          onAddIncomeClick={() => setIsAddIncomeModalOpen(true)}
+          onAddExpenseClick={() => setIsAddExpenseModalOpen(true)}
+        />
         {/* Monthly Navigation (Placeholder) */}
         <MonthlyNavigation />
         {/* Summary (Placeholder) */}
-        <Summary income={1500} expenses={320} />
+        <Summary refreshTrigger={refreshTransactions} />
         {/* Chart (Placeholder) */}
         <Chart />
         {/* Transactions List (Placeholder) */}
-        <TransactionsList />
+        <TransactionsList refreshTrigger={refreshTransactions} />
       </div>
       {/* Add Income Modal */}
-      <AddIncomeModal isOpen={isAddIncomeModalOpen} onClose={() => setIsAddIncomeModalOpen(false)} />
+      <AddIncomeModal
+        isOpen={isAddIncomeModalOpen}
+        onClose={() => setIsAddIncomeModalOpen(false)}
+        onAddIncome={handleTransactionAdded}
+      />
       {/* Add Expense Modal */}
-      <AddExpenseModal isOpen={isAddExpenseModalOpen} onClose={() => setIsAddExpenseModalOpen(false)} />
+      <AddExpenseModal
+        isOpen={isAddExpenseModalOpen}
+        onClose={() => setIsAddExpenseModalOpen(false)}
+        onAddExpense={handleTransactionAdded}
+      />
     </div>
   );
 }
