@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { expenseCategories, Category } from '../lib/categories';
 
 interface AddExpenseModalProps {
   isOpen: boolean;
@@ -11,11 +12,12 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClose, onAd
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<number | ''>('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Current date in YYYY-MM-DD format
+  const [category, setCategory] = useState<string>(expenseCategories[0].id);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleAddExpense = async () => {
-    if (!name || !amount || !date) {
+    if (!name || !amount || !date || !category) {
       setError('Please fill in all fields.');
       return;
     }
@@ -27,6 +29,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClose, onAd
       amount,
       type: 'expense',
       date,
+      category,
     });
 
     setLoading(false);
@@ -39,6 +42,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClose, onAd
       setName('');
       setAmount('');
       setDate(new Date().toISOString().split('T')[0]);
+      setCategory(expenseCategories[0].id);
       onClose();
       onAddExpense(); // Trigger refresh in parent component
     }
@@ -82,6 +86,22 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ isOpen, onClose, onAd
             onChange={(e) => setAmount(parseFloat(e.target.value) || '')}
             disabled={loading}
           />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+          <select
+            id="category"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out text-gray-800"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={loading}
+          >
+            {expenseCategories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.icon} {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-6 flex items-center">
           <label htmlFor="date" className="sr-only">Date</label>

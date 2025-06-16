@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { incomeCategories, expenseCategories, Category } from '../lib/categories';
 
 interface Transaction {
   id: string;
@@ -7,6 +8,7 @@ interface Transaction {
   amount: number;
   type: 'income' | 'expense';
   date: string;
+  category: string;
 }
 
 interface TransactionsListProps {
@@ -23,7 +25,7 @@ const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger, sel
       setLoading(true);
       let query = supabase
         .from('transactions')
-        .select('id, name, amount, type, date')
+        .select('id, name, amount, type, date, category')
         .order('created_at', { ascending: false });
 
       if (selectedMonth) {
@@ -47,7 +49,12 @@ const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger, sel
     };
 
     fetchTransactions();
-  }, [refreshTrigger, selectedMonth, setTransactions]);
+  }, [refreshTrigger, selectedMonth]);
+
+  const getCategoryInfo = (type: 'income' | 'expense', categoryId: string): Category | undefined => {
+    const categories = type === 'income' ? incomeCategories : expenseCategories;
+    return categories.find(cat => cat.id === categoryId);
+  };
 
   if (loading) {
     return <div className="text-center text-gray-500">Loading transactions...</div>;
@@ -61,30 +68,29 @@ const TransactionsList: React.FC<TransactionsListProps> = ({ refreshTrigger, sel
     <div className="mt-6">
       <h2 className="text-lg text-black font-semibold mb-4">Transactions</h2>
       <div className="space-y-3">
-        {transactions.map((transaction) => (
-          <div key={transaction.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg shadow-sm">
-            <div className="flex items-center space-x-3">
-              <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                {transaction.type === 'income' ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                  </svg>
-                )}
+        {transactions.map((transaction) => {
+          const categoryInfo = getCategoryInfo(transaction.type, transaction.category);
+          return (
+            <div key={transaction.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                  {categoryInfo?.icon || (transaction.type === 'income' ? '💰' : '💸')}
+                </div>
+                <div>
+                  <p className="font-medium text-gray-800">{transaction.name}</p>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                    <span className="text-sm text-gray-400">•</span>
+                    <p className="text-sm text-gray-500">{categoryInfo?.name || 'Uncategorized'}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-gray-800">{transaction.name}</p>
-                <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-              </div>
+              <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-700' : 'text-red-700'}`}>
+                {transaction.type === 'income' ? '+' : '-'}£{transaction.amount}
+              </p>
             </div>
-            <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-700' : 'text-red-700'}`}>
-              {transaction.type === 'income' ? '+' : '-'}£{transaction.amount}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

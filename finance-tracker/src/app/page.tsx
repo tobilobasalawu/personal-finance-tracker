@@ -1,5 +1,4 @@
 'use client'
-import Header from '../components/Header';
 import BalanceDisplay from '../components/BalanceDisplay';
 import ActionButtons from '../components/ActionButtons';
 import MonthlyNavigation from '../components/MonthlyNavigation';
@@ -9,6 +8,7 @@ import TransactionsList from '../components/TransactionsList';
 import AddIncomeModal from '../components/AddIncomeModal';
 import AddExpenseModal from '../components/AddExpenseModal';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
@@ -25,37 +25,57 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-        {/* Header */}
-        <Header />
-        {/* Balance Display */}
-        <BalanceDisplay refreshTrigger={refreshTransactions} />
-        {/* Action Buttons */}
-        <ActionButtons
-          onAddIncomeClick={() => setIsAddIncomeModalOpen(true)}
-          onAddExpenseClick={() => setIsAddExpenseModalOpen(true)}
-        />
-        {/* Monthly Navigation (Placeholder) */}
-        <MonthlyNavigation
-          refreshTrigger={refreshTransactions}
-          selectedMonth={selectedMonth}
-          onSelectMonth={handleMonthSelect}
-        />
-        {/* Summary (Placeholder) */}
-        <Summary refreshTrigger={refreshTransactions} />
-        {/* Chart (Placeholder) */}
-        <Chart refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
-        {/* Transactions List (Placeholder) */}
-        <TransactionsList refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
-      </div>
-      {/* Add Income Modal */}
+    <div className="min-h-screen bg-gray-100">
+      {/* Main content container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">Cash Wallet</h1>
+          <Link 
+            href="/analytics" 
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            View Analytics
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left column - Balance and Actions */}
+          <div className="lg:col-span-1 space-y-6">
+            <BalanceDisplay refreshTrigger={refreshTransactions} />
+            <ActionButtons
+              onAddIncomeClick={() => setIsAddIncomeModalOpen(true)}
+              onAddExpenseClick={() => setIsAddExpenseModalOpen(true)}
+            />
+          </div>
+
+          {/* Middle column - Summary and Chart */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <MonthlyNavigation
+                refreshTrigger={refreshTransactions}
+                selectedMonth={selectedMonth}
+                onSelectMonth={handleMonthSelect}
+              />
+              <Summary refreshTrigger={refreshTransactions} />
+              <Chart refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
+            </div>
+          </div>
+
+          {/* Bottom section - Transactions List (full width) */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <TransactionsList refreshTrigger={refreshTransactions} selectedMonth={selectedMonth} />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Modals */}
       <AddIncomeModal
         isOpen={isAddIncomeModalOpen}
         onClose={() => setIsAddIncomeModalOpen(false)}
         onAddIncome={handleTransactionAdded}
       />
-      {/* Add Expense Modal */}
       <AddExpenseModal
         isOpen={isAddExpenseModalOpen}
         onClose={() => setIsAddExpenseModalOpen(false)}

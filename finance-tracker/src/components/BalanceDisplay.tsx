@@ -39,17 +39,25 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ refreshTrigger }) => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-lg mb-4 text-center shadow-md">
-        <p className="text-4xl font-bold mb-1">Loading...</p>
-        <p className="text-sm opacity-90">Available Balance</p>
+      <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 sm:p-6 rounded-xl shadow-lg">
+        <div className="animate-pulse">
+          <div className="h-8 bg-blue-400 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-blue-400 rounded w-1/2"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-lg mb-4 text-center shadow-md">
-      <p className="text-4xl font-bold mb-1">£{balance.toFixed(2)}</p>
-      <p className="text-sm opacity-90">Available Balance</p>
+    <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 sm:p-6 rounded-xl shadow-lg">
+      <p className="text-sm sm:text-base font-medium opacity-90 mb-1">Available Balance</p>
+      <p className="text-3xl sm:text-4xl font-bold">£{balance.toFixed(2)}</p>
+      <div className="mt-2 flex items-center text-xs sm:text-sm opacity-90">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Updated just now
+      </div>
     </div>
   );
 };

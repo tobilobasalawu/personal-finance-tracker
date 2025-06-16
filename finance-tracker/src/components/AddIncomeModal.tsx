@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { incomeCategories, Category } from '../lib/categories';
 
 interface AddIncomeModalProps {
   isOpen: boolean;
@@ -11,11 +12,12 @@ const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose, onAddI
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<number | ''>('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Current date in YYYY-MM-DD format
+  const [category, setCategory] = useState<string>(incomeCategories[0].id);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleAddIncome = async () => {
-    if (!name || !amount || !date) {
+    if (!name || !amount || !date || !category) {
       setError('Please fill in all fields.');
       return;
     }
@@ -27,6 +29,7 @@ const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose, onAddI
       amount,
       type: 'income',
       date,
+      category,
     });
 
     setLoading(false);
@@ -39,6 +42,7 @@ const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose, onAddI
       setName('');
       setAmount('');
       setDate(new Date().toISOString().split('T')[0]);
+      setCategory(incomeCategories[0].id);
       onClose();
       onAddIncome(); // Trigger refresh in parent component
     }
@@ -92,6 +96,22 @@ const AddIncomeModal: React.FC<AddIncomeModalProps> = ({ isOpen, onClose, onAddI
             onChange={(e) => setAmount(parseFloat(e.target.value) || '')}
             disabled={loading}
           />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+          <select
+            id="category"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out text-gray-800"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={loading}
+          >
+            {incomeCategories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.icon} {cat.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-6 flex items-center border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 transition duration-200 ease-in-out">
           <label htmlFor="date" className="sr-only">Date</label>
