@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd finance-tracker && npm run build",
+  "outputDirectory": "finance-tracker/.next",
+  "framework": "nextjs",
+  "installCommand": "cd finance-tracker && npm install"
+} 
