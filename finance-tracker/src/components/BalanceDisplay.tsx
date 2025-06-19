@@ -8,6 +8,7 @@ interface BalanceDisplayProps {
 const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ refreshTrigger }) => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [savingsGoal, setSavingsGoal] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -34,7 +35,17 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ refreshTrigger }) => {
       setLoading(false);
     };
 
+    const fetchSavingsGoal = async () => {
+      const { data, error } = await supabase.from('budget').select('income').limit(1).single();
+      if (data && data.income) {
+        setSavingsGoal(data.income * 0.2);
+      } else {
+        setSavingsGoal(null);
+      }
+    };
+
     fetchBalance();
+    fetchSavingsGoal();
   }, [refreshTrigger]);
 
   if (loading) {
@@ -52,6 +63,9 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({ refreshTrigger }) => {
     <div className="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-4 sm:p-6 rounded-xl shadow-lg">
       <p className="text-sm sm:text-base font-medium opacity-90 mb-1">Available Balance</p>
       <p className="text-3xl sm:text-4xl font-bold">£{balance.toFixed(2)}</p>
+      {savingsGoal !== null && (
+        <p className="mt-1 text-xs sm:text-sm opacity-90">Savings goal for this period: <span className="font-semibold">£{savingsGoal.toFixed(2)}</span></p>
+      )}
       <div className="mt-2 flex items-center text-xs sm:text-sm opacity-90">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
